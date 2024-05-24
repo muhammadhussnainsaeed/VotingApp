@@ -8,7 +8,7 @@ class Group4 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 298,
-      height: 60,
+      height: 61,
       child: ElevatedButton(
         onPressed: () {
           controller.nextPage(duration: Duration(milliseconds: 900), curve: Curves.ease);
