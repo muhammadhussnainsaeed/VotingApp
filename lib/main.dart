@@ -82,6 +82,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               FifthPage(controller: _controller),
             ],
           ),
+          if (_currentPage < 4)
           Positioned(
             left: 0,
             right: 0,
@@ -125,13 +126,13 @@ class FirstPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(50.0, 50.0, 20.0, 50.0), // Added padding
+            padding: const EdgeInsets.fromLTRB(50.0, 50.0, 50.0, 50.0), // Added padding
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Are you ready to vote?',
-                  textAlign: TextAlign.left, // Align text to the left
+                  textAlign: TextAlign.right, // Align text to the left
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -176,7 +177,7 @@ class SecondPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(50.0, 50.0, 20.0, 50.0), // Added padding
+              padding: const EdgeInsets.fromLTRB(50.0, 50.0, 50.0, 50.0), // Added padding
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -226,7 +227,7 @@ class ThirdPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(50.0, 50.0, 20.0, 50.0), // Added padding
+              padding: const EdgeInsets.fromLTRB(50.0, 50.0, 50.0, 50.0), // Added padding
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -368,7 +369,10 @@ class _FifthPageState extends State<FifthPage> {
         child: GestureDetector(
           onHorizontalDragEnd: (details) {
             if (details.primaryVelocity! > 0) {
-              widget.controller.previousPage(duration: Duration(milliseconds: 500), curve: Curves.ease);
+              widget.controller.previousPage(
+                duration: Duration(milliseconds: 500),
+                curve: Curves.ease,
+              );
             }
           },
           child: Column(
@@ -379,33 +383,52 @@ class _FifthPageState extends State<FifthPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Register with CNIC',
+                      'Login with your CNIC',
                       style: TextStyle(
-                          fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF00A153)),
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF00A153),
+                      ),
                     ),
                     SizedBox(height: 20),
                     Text(
                       'Your CNIC is used to fetch your data and verify that you have voted.',
                       style: TextStyle(
-                          fontSize: 15, color: Theme.of(context).textTheme.bodyText1!.color),
+                        fontSize: 15,
+                        color: Theme.of(context).textTheme.bodyText1!.color,
+                      ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     TextField(
                       focusNode: _cnicFocusNode,
                       controller: _cnicController,
                       onChanged: _validateCnic,
+                      cursorColor: Color(0xFF00A153), // Change the cursor color to purple
                       decoration: InputDecoration(
-                        hintText: 'Input your CNIC',
-                        hintStyle: TextStyle(color: Color(0xFF939393), fontSize: 15),
-                        border: OutlineInputBorder(
+                        hintText: 'Enter your CNIC',
+                        hintStyle: TextStyle(
+                          color: Color(0xFF939393),
+                          fontSize: 15,
+                        ),
+                        enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(color: _cnicFocusNode.hasFocus ? Colors.green : Color(0xFFD6D6D6)), // Color changes when focused
+                          borderSide: BorderSide(color: Color(0xFFD6D6D6)), // Color when not focused
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(11),
+                          borderSide: BorderSide(color: Color(0xFF00A153)), // Change border color to purple when focused
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 2),
                     if (_errorMessage.isNotEmpty)
-                      Text(_errorMessage, style: TextStyle(color: Colors.red, fontSize: 14)),
+                      Text(
+                        _errorMessage,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 14,
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -415,15 +438,22 @@ class _FifthPageState extends State<FifthPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(50.0),
                     child: ElevatedButton(
-                      onPressed: _isInputValid ? () {
-                        widget.controller.nextPage(duration: Duration(milliseconds: 900), curve: Curves.ease);
-                      } : null,
+                      onPressed: _isInputValid
+                          ? () {
+                        widget.controller.nextPage(
+                          duration: Duration(milliseconds: 900),
+                          curve: Curves.ease,
+                        );
+                      }
+                          : null,
                       style: ElevatedButton.styleFrom(
-                          primary: _isInputValid ? Color(0xFF00A153) : Color(0x7F8BEEB1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(11),
-                          ),
-                          minimumSize: Size(298, 60) // Set the size
+                        primary: _isInputValid
+                            ? Color(0xFF00A153)
+                            : Color(0x7F8BEEB1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(11),
+                        ),
+                        minimumSize: Size(298, 60), // Set the size
                       ),
                       child: Text(
                         'Next',
