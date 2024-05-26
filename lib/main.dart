@@ -558,7 +558,7 @@ class _SixthPageState extends State<SixthPage> {
               Text(
                 'Verification Successful',
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF00A153),
                 ),
