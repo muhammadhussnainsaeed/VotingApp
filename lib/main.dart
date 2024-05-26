@@ -320,45 +320,73 @@ class FifthPage extends StatefulWidget {
 
 class _FifthPageState extends State<FifthPage> {
   final TextEditingController _cnicController = TextEditingController();
+  final TextEditingController _pinController = TextEditingController();
   final FocusNode _cnicFocusNode = FocusNode();
-  bool _isInputValid = false;
-  String _errorMessage = '';
+  final FocusNode _pinFocusNode = FocusNode();
+
+  bool _isCnicValid = false;
+  bool _isPinValid = false;
+  String _cnicErrorMessage = '';
+  String _pinErrorMessage = '';
 
   @override
   void initState() {
     super.initState();
     _cnicFocusNode.addListener(_handleFocusChange);
+    _pinFocusNode.addListener(_handleFocusChange);
   }
 
   @override
   void dispose() {
     _cnicController.dispose();
+    _pinController.dispose();
     _cnicFocusNode.removeListener(_handleFocusChange);
+    _pinFocusNode.removeListener(_handleFocusChange);
     _cnicFocusNode.dispose();
+    _pinFocusNode.dispose();
     super.dispose();
   }
 
   void _handleFocusChange() {
-    if (_cnicFocusNode.hasFocus) {
+    if (_cnicFocusNode.hasFocus || _pinFocusNode.hasFocus) {
       // Trigger a rebuild when the focus state changes
       setState(() {});
     }
   }
 
   void _validateCnic(String value) {
-    if (value.length == 13 && RegExp(r'^[0-9]+$').hasMatch(value)) {
-      setState(() {
-        _isInputValid = true;
-        _errorMessage = '';
-      });
-    } else {
-      setState(() {
-        _isInputValid = false;
-        _errorMessage = value.isNotEmpty && !RegExp(r'^[0-9]+$').hasMatch(value)
+    setState(() {
+      if (value.length == 13 && RegExp(r'^[0-9]+$').hasMatch(value)) {
+        _isCnicValid = true;
+        _cnicErrorMessage = '';
+      } else {
+        _isCnicValid = false;
+        _cnicErrorMessage = value.isNotEmpty && !RegExp(r'^[0-9]+$').hasMatch(value)
             ? 'Only 13 numbers are allowed'
             : '';
-      });
-    }
+      }
+    });
+  }
+
+  void _validatePin(String value) {
+    setState(() {
+      if (value.length == 6 && RegExp(r'^[0-9]+$').hasMatch(value)) {
+        _isPinValid = true;
+        _pinErrorMessage = '';
+      } else {
+        _isPinValid = false;
+        _pinErrorMessage = value.isNotEmpty && !RegExp(r'^[0-9]+$').hasMatch(value)
+            ? 'Only 6 numbers are allowed'
+            : '';
+      }
+    });
+  }
+
+  bool get _isFormValid => _isCnicValid && _isPinValid;
+
+  void _onNextPressed() {
+    // Simulate verification process
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => SixthPage()));
   }
 
   @override
@@ -403,7 +431,7 @@ class _FifthPageState extends State<FifthPage> {
                       focusNode: _cnicFocusNode,
                       controller: _cnicController,
                       onChanged: _validateCnic,
-                      cursorColor: Color(0xFF00A153), // Change the cursor color to purple
+                      cursorColor: Color(0xFF00A153), // Change the cursor color
                       decoration: InputDecoration(
                         hintText: 'Enter your CNIC',
                         hintStyle: TextStyle(
@@ -416,14 +444,45 @@ class _FifthPageState extends State<FifthPage> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(color: Color(0xFF00A153)), // Change border color to purple when focused
+                          borderSide: BorderSide(color: Color(0xFF00A153)), // Change border color when focused
                         ),
                       ),
                     ),
                     SizedBox(height: 2),
-                    if (_errorMessage.isNotEmpty)
+                    if (_cnicErrorMessage.isNotEmpty)
                       Text(
-                        _errorMessage,
+                        _cnicErrorMessage,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 14,
+                        ),
+                      ),
+                    SizedBox(height: 20),
+                    TextField(
+                      focusNode: _pinFocusNode,
+                      controller: _pinController,
+                      onChanged: _validatePin,
+                      cursorColor: Color(0xFF00A153), // Change the cursor color
+                      decoration: InputDecoration(
+                        hintText: 'Enter your PIN',
+                        hintStyle: TextStyle(
+                          color: Color(0xFF939393),
+                          fontSize: 15,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(11),
+                          borderSide: BorderSide(color: Color(0xFFD6D6D6)), // Color when not focused
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(11),
+                          borderSide: BorderSide(color: Color(0xFF00A153)), // Change border color when focused
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    if (_pinErrorMessage.isNotEmpty)
+                      Text(
+                        _pinErrorMessage,
                         style: TextStyle(
                           color: Colors.red,
                           fontSize: 14,
@@ -438,18 +497,9 @@ class _FifthPageState extends State<FifthPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(50.0),
                     child: ElevatedButton(
-                      onPressed: _isInputValid
-                          ? () {
-                        widget.controller.nextPage(
-                          duration: Duration(milliseconds: 900),
-                          curve: Curves.ease,
-                        );
-                      }
-                          : null,
+                      onPressed: _isFormValid ? _onNextPressed : null,
                       style: ElevatedButton.styleFrom(
-                        primary: _isInputValid
-                            ? Color(0xFF00A153)
-                            : Color(0x7F8BEEB1),
+                        primary: _isFormValid ? Color(0xFF00A153) : Color(0x7F8BEEB1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(11),
                         ),
@@ -466,6 +516,60 @@ class _FifthPageState extends State<FifthPage> {
                       ),
                     ),
                   ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SixthPage extends StatefulWidget {
+  @override
+  _SixthPageState createState() => _SixthPageState();
+}
+
+class _SixthPageState extends State<SixthPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.of(context).pop(); // or navigate to another page
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/verified.png', // Ensure this image is added to your assets folder and mentioned in pubspec.yaml
+                width: 300,
+                height: 300,
+              ),
+              SizedBox(height: 15),
+              Text(
+                'Verification Successful',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF00A153),
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Welcome to Voting App',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Theme.of(context).textTheme.bodyText1!.color,
                 ),
               ),
             ],
