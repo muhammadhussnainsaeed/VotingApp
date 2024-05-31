@@ -60,6 +60,12 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/verified.png
+    - assets/icons/home.png
+    - assets/icons/votegreen.png
+    - assets/icons/settingsgreen.png
+    - assets/icons/homegreen.png
+    - assets/icons/vote.png
+    - assets/icons/settings.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
