@@ -13,6 +13,7 @@ class VotingApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String name = 'John Doe';
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
@@ -585,13 +586,15 @@ class _SixthPageState extends State<SixthPage> {
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
+
 }
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
+
+    HomeScreen(name: name),
     VoteScreen(),
     SettingsScreen(),
   ];
@@ -605,9 +608,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: Container(
         width: 390, // Set the width of the container
         height: 95, // Set the height of the container
@@ -665,7 +666,7 @@ class _MainPageState extends State<MainPage> {
           currentIndex: _selectedIndex,
           selectedItemColor: Color(0xFF00A153),
           unselectedItemColor: Colors.grey,
-          selectedLabelStyle: TextStyle(fontSize: 14,fontWeight: FontWeight.bold), // Custom font size for selected label
+          selectedLabelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), // Custom font size for selected label
           unselectedLabelStyle: TextStyle(fontSize: 12), // Custom font size for unselected label
           onTap: _onItemTapped,
         ),
@@ -674,41 +675,90 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
+
 class HomeScreen extends StatelessWidget {
+  final String name;
+
+  HomeScreen({required this.name});
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Home Screen',
-        style: TextStyle(fontSize: 24),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(75), // Increase the height of the AppBar
+        child: AppBar(
+          automaticallyImplyLeading: false, // Remove the back arrow
+          backgroundColor: Colors.white,
+          title: Text(
+            'Hi $name',
+            style: TextStyle(color: Colors.black),
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout, color: Colors.black),
+              onPressed: () {
+                // Add your logout logic here
+              },
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: Colors.grey[300],
+      body: Center(
+        child: Text(
+          'Home Screen',
+          style: TextStyle(fontSize: 24),
+        ),
       ),
     );
   }
 }
 
+
+
 class VoteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Vote Screen',
-        style: TextStyle(fontSize: 24),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(75), // Increase the height of the AppBar
+        child: AppBar(
+          title: Text('Vote'),
+          backgroundColor: Colors.white,
+        ),
+      ),
+      backgroundColor: Colors.grey[300],
+      body: Center(
+        child: Text(
+          'Vote Screen',
+          style: TextStyle(fontSize: 24),
+        ),
       ),
     );
   }
 }
+
+
 
 class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Colors.grey[100], // Set the background color to a light gray
-    body: Center(
-      child: Text(
-        'Settings Screen',
-        style: TextStyle(fontSize: 24),
-       ),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(75), // Increase the height of the AppBar
+        child: AppBar(
+          title: Text('Settings'),
+          backgroundColor: Colors.white,
+        ),
+      ),
+      backgroundColor: Colors.grey[300], // Set the background color to a light gray
+      body: Center(
+        child: Text(
+          'Settings Screen',
+          style: TextStyle(fontSize: 24),
+        ),
       ),
     );
   }
 }
+
