@@ -681,7 +681,7 @@ class HomeScreen extends StatelessWidget {
 
   HomeScreen({required this.name});
 
-  @override
+  @overrid
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
