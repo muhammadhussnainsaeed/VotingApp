@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:project1/Group1.dart';
 import 'package:project1/Group2.dart';
@@ -84,35 +85,35 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ],
           ),
           if (_currentPage < 4)
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 50,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    for (int i = 0; i < 4; i++)
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5),
-                        width: 9,
-                        height: 9,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _currentPage == i ? Color(0xFF00A153) : Colors.white,
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 50,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (int i = 0; i < 4; i++)
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          width: 9,
+                          height: 9,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _currentPage == i ? Color(0xFF00A153) : Colors.white,
+                          ),
                         ),
-                      ),
-                  ],
-                ),
-                SizedBox(height: 35),
-                if (_currentPage < 3) // Only display the button if it's not the last page
-                  Group1(controller: _controller),
-                if(_currentPage == 3)
-                  Group2(controller: _controller),
-              ],
+                    ],
+                  ),
+                  SizedBox(height: 35),
+                  if (_currentPage < 3) // Only display the button if it's not the last page
+                    Group1(controller: _controller),
+                  if(_currentPage == 3)
+                    Group2(controller: _controller),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -527,6 +528,7 @@ class _FifthPageState extends State<FifthPage> {
   }
 }
 
+
 class SixthPage extends StatefulWidget {
   @override
   _SixthPageState createState() => _SixthPageState();
@@ -586,18 +588,23 @@ class _SixthPageState extends State<SixthPage> {
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
-
 }
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  static List<Widget> _widgetOptions = <Widget>[
 
-    HomeScreen(name: name),
-    VoteScreen(),
-    SettingsScreen(),
-  ];
+  List<Widget> _widgetOptions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _widgetOptions = <Widget>[
+      HomeScreen(name: 'John Doe',),
+      VoteScreen(),
+      SettingsScreen(),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -678,11 +685,28 @@ class _MainPageState extends State<MainPage> {
 
 class HomeScreen extends StatelessWidget {
   final String name;
+  final dynamic controller;
 
-  HomeScreen({required this.name});
+  // Declare controllers outside of the build method
+  final TextEditingController _cnicController = TextEditingController();
+  final TextEditingController _pinController = TextEditingController();
+
+  HomeScreen({required this.name, this.controller});
 
   @override
   Widget build(BuildContext context) {
+    void _logout() {
+      // Clear the text fields
+      _cnicController.clear();
+      _pinController.clear();
+
+      // Navigate to FifthPage with the controller
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => FifthPage(controller: controller)),
+      );
+    }
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(75), // Increase the height of the AppBar
@@ -696,9 +720,7 @@ class HomeScreen extends StatelessWidget {
           actions: [
             IconButton(
               icon: Icon(Icons.logout, color: Colors.black),
-              onPressed: () {
-                // Add your logout logic here
-              },
+              onPressed: _logout,
             ),
           ],
         ),
@@ -713,7 +735,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
 
 
 class VoteScreen extends StatelessWidget {

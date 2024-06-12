@@ -66,6 +66,7 @@ flutter:
     - assets/icons/homegreen.png
     - assets/icons/vote.png
     - assets/icons/settings.png
+    - assets/icons/logout.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
