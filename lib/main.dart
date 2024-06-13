@@ -23,7 +23,7 @@ class VotingApp extends StatelessWidget {
           ),
         ),
       ),
-      home: WelcomeScreen()
+      home: WelcomeScreen(),
     );
   }
 }
