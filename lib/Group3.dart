@@ -14,7 +14,7 @@ class Group3 extends StatelessWidget {
           controller.nextPage(duration: Duration(milliseconds: 900), curve: Curves.ease);
         },
         style: ElevatedButton.styleFrom(
-          primary: Color(0x7F79DEAB),
+          backgroundColor: Color(0x7F79DEAB),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(11),
           ),

@@ -1,9 +1,7 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:project1/Group1.dart';
 import 'package:project1/Group2.dart';
-import 'package:project1/Group3.dart';
-import 'package:project1/Group4.dart';
+
 
 void main() {
   runApp(const VotingApp());
@@ -14,7 +12,6 @@ class VotingApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String name = 'John Doe';
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
@@ -22,7 +19,7 @@ class VotingApp extends StatelessWidget {
         hintColor: Colors.tealAccent, // Change the accent color to tealAccent
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            primary: Colors.teal, // Change the background color of the ElevatedButton to teal
+            backgroundColor: Colors.teal, // Change the background color of the ElevatedButton to teal
           ),
         ),
       ),
@@ -138,7 +135,7 @@ class FirstPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textTheme.headline1!.color, // Use theme color for text
+                    color: Colors.black, // Use theme color for text
                   ),
                 ),
                 SizedBox(height: 20),
@@ -147,7 +144,7 @@ class FirstPage extends StatelessWidget {
                   textAlign: TextAlign.left, // Align text to the left
                   style: TextStyle(
                     fontSize: 15,
-                    color: Theme.of(context).textTheme.bodyText1!.color, // Use theme color for text
+                    color: Colors.black, // Use theme color for text
                   ),
                 ),
               ],
@@ -189,7 +186,7 @@ class SecondPage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.headline1!.color, // Use theme color for text
+                      color: Colors.black, // Use theme color for text
                     ),
                   ),
                   SizedBox(height: 20),
@@ -198,7 +195,7 @@ class SecondPage extends StatelessWidget {
                     textAlign: TextAlign.left, // Align text to the left
                     style: TextStyle(
                       fontSize: 15,
-                      color: Theme.of(context).textTheme.bodyText1!.color, // Use theme color for text
+                      color: Colors.black, // Use theme color for text
                     ),
                   ),
                 ],
@@ -239,7 +236,7 @@ class ThirdPage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.headline1!.color, // Use theme color for text
+                      color: Colors.black, // Use theme color for text
                     ),
                   ),
                   SizedBox(height: 20),
@@ -248,7 +245,7 @@ class ThirdPage extends StatelessWidget {
                     textAlign: TextAlign.left, // Align text to the left
                     style: TextStyle(
                       fontSize: 15,
-                      color: Theme.of(context).textTheme.bodyText1!.color, // Use theme color for text
+                      color: Colors.black, // Use theme color for text
                     ),
                   ),
                 ],
@@ -289,7 +286,7 @@ class FourthPage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.headline1!.color, // Use theme color for text
+                      color: Colors.black, // Use theme color for text
                     ),
                   ),
                   SizedBox(height: 20),
@@ -298,7 +295,7 @@ class FourthPage extends StatelessWidget {
                     textAlign: TextAlign.left, // Align text to the left
                     style: TextStyle(
                       fontSize: 15,
-                      color: Theme.of(context).textTheme.bodyText1!.color, // Use theme color for text
+                      color: Colors.black, // Use theme color for text
                     ),
                   ),
                 ],
@@ -425,7 +422,7 @@ class _FifthPageState extends State<FifthPage> {
                       'Your CNIC is used to fetch your data and verify that you have voted.',
                       style: TextStyle(
                         fontSize: 15,
-                        color: Theme.of(context).textTheme.bodyText1!.color,
+                        color: Colors.black,
                       ),
                     ),
                     SizedBox(height: 10),
@@ -501,7 +498,7 @@ class _FifthPageState extends State<FifthPage> {
                     child: ElevatedButton(
                       onPressed: _isFormValid ? _onNextPressed : null,
                       style: ElevatedButton.styleFrom(
-                        primary: _isFormValid ? Color(0xFF00A153) : Color(0x7F8BEEB1),
+                        backgroundColor: _isFormValid ? Color(0xFF00A153) : Color(0x7F8BEEB1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(11),
                         ),
@@ -574,7 +571,7 @@ class _SixthPageState extends State<SixthPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
-                  color: Theme.of(context).textTheme.bodyText1!.color,
+                  color: Colors.black,
                 ),
               ),
             ],
@@ -707,6 +704,8 @@ class HomeScreen extends StatelessWidget {
       );
     }
 
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(75), // Increase the height of the AppBar
@@ -726,10 +725,71 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.grey[300],
-      body: Center(
-        child: Text(
-          'Home Screen',
-          style: TextStyle(fontSize: 24),
+      body: Padding(
+        padding: const EdgeInsets.all(25.0), // Add padding around the content
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  width: screenWidth - 32, // Subtract padding from screen width
+                  height: 96,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white,
+                  ),
+                  padding: const EdgeInsets.only(left: 100, top: 10, right: 8), // Add padding for the text
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Panda B.",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 4), // Add some space between the texts
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          if (constraints.maxWidth < 250) {
+                            return Text(
+                              "The panda, with its endearing black-and-white coat, embodies both charm and conservation... ",
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.normal,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          } else {
+                            return Text(
+                              "The panda, with its endearing black-and-white coat, embodies both charm and conservation... Read more",
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  left: 15,
+                  top: 13,
+                  child: Container(
+                    width: 72,
+                    height: 69,
+                    decoration: BoxDecoration(
+                      color: Colors.blue, // You can change the color to whatever you prefer
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
