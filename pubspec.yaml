@@ -60,6 +60,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/verified.png
+    - assets/images/tiger.jpg
+    - assets/images/panda.jpg
     - assets/icons/home.png
     - assets/icons/votegreen.png
     - assets/icons/settingsgreen.png
