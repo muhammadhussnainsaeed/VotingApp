@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project1/FifthPage.dart';
 import 'HomeScreen.dart';
 import 'SettingsScreen.dart';
 import 'VoteScreen.dart';
@@ -9,8 +10,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
   final PageController _controller = PageController();
+  int _selectedIndex = 0;
+
 
   List<Widget> _widgetOptions = [];
 
@@ -18,7 +20,7 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _widgetOptions = <Widget>[
-      HomeScreen(name: 'John Doe',controller: _controller),
+      HomeScreen(name: 'John Doe',controller: _controller,),
       VoteScreen(),
       SettingsScreen(),
     ];
