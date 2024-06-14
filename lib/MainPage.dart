@@ -10,7 +10,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
-
+  final PageController _controller = PageController();
 
   List<Widget> _widgetOptions = [];
 
@@ -18,7 +18,7 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _widgetOptions = <Widget>[
-      HomeScreen(name: 'John Doe',),
+      HomeScreen(name: 'John Doe',controller: _controller),
       VoteScreen(),
       SettingsScreen(),
     ];
