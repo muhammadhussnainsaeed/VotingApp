@@ -16,8 +16,8 @@ class _FifthPageState extends State<FifthPage> {
   final FocusNode _cnicFocusNode = FocusNode();
   final FocusNode _pinFocusNode = FocusNode();
 
-  bool _isCnicValid = false;
-  bool _isPinValid = false;
+  bool _isCnicValid = true;
+  bool _isPinValid = true;
   String _cnicErrorMessage = '';
   String _pinErrorMessage = '';
 

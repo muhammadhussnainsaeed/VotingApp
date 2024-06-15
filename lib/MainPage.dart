@@ -22,7 +22,7 @@ class _MainPageState extends State<MainPage> {
     _widgetOptions = <Widget>[
       HomeScreen(name: 'John Doe',controller: _controller,),
       VoteScreen(),
-      SettingsScreen(),
+      SettingsScreen(name: 'John Doe',image: 'assets/images/panda.jpg',controller: _controller,),
     ];
   }
 
