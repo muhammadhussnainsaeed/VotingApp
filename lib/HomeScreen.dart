@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     },
     {
       'name': 'Tiger A.',
-      'description': 'The tiger is known for its majestic appearance and strength...',
+      'description': 'The tiger is knrown for its majestic appearance and strength...',
       'image': 'assets/images/uba.jpeg',
     },
     {
