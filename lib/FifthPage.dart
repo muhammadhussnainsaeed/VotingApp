@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'SixthPage.dart';
+import 'package:flutter/services.dart';
+import 'package:project1/MainPage.dart'; // Adjust this import according to your project structure
 
 class FifthPage extends StatefulWidget {
   final PageController controller;
@@ -48,6 +49,9 @@ class _FifthPageState extends State<FifthPage> {
 
   void _validateCnic(String value) {
     setState(() {
+      // Remove non-digit characters
+      value = value.replaceAll(RegExp(r'[^\d]'), '');
+
       if (value.length == 13 && RegExp(r'^[0-9]+$').hasMatch(value)) {
         _isCnicValid = true;
         _cnicErrorMessage = '';
@@ -58,6 +62,8 @@ class _FifthPageState extends State<FifthPage> {
             : '';
       }
     });
+
+    _updateFormValidity();
   }
 
   void _validatePin(String value) {
@@ -72,13 +78,27 @@ class _FifthPageState extends State<FifthPage> {
             : '';
       }
     });
+
+    _updateFormValidity();
   }
 
-  bool get _isFormValid => _isCnicValid && _isPinValid;
+  void _updateFormValidity() {
+    setState(() {
+      // Update the overall form validity
+      _isFormValid = _isCnicValid && _isPinValid;
+    });
+  }
+
+  bool _isFormValid = false;
 
   void _onNextPressed() {
-    // Simulate verification process
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => SixthPage()));
+    if (_isFormValid) {
+      // Navigate to the main page
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => MainPage()),
+            (route) => false,
+      );
+    }
   }
 
   @override
@@ -124,6 +144,10 @@ class _FifthPageState extends State<FifthPage> {
                       controller: _cnicController,
                       onChanged: _validateCnic,
                       cursorColor: Color(0xFF00A153), // Change the cursor color
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
                       decoration: InputDecoration(
                         hintText: 'Enter your CNIC',
                         hintStyle: TextStyle(
@@ -155,6 +179,11 @@ class _FifthPageState extends State<FifthPage> {
                       controller: _pinController,
                       onChanged: _validatePin,
                       cursorColor: Color(0xFF00A153), // Change the cursor color
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(6),
+                      ],
                       decoration: InputDecoration(
                         hintText: 'Enter your PIN',
                         hintStyle: TextStyle(
