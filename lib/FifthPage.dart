@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:project1/MainPage.dart'; // Adjust this import according to your project structure
+import 'SixthPage.dart';
 
 class FifthPage extends StatefulWidget {
   final PageController controller;
@@ -16,7 +16,6 @@ class _FifthPageState extends State<FifthPage> {
   final TextEditingController _pinController = TextEditingController();
   final FocusNode _cnicFocusNode = FocusNode();
   final FocusNode _pinFocusNode = FocusNode();
-
   bool _isCnicValid = true;
   bool _isPinValid = true;
   String _cnicErrorMessage = '';
@@ -49,9 +48,6 @@ class _FifthPageState extends State<FifthPage> {
 
   void _validateCnic(String value) {
     setState(() {
-      // Remove non-digit characters
-      value = value.replaceAll(RegExp(r'[^\d]'), '');
-
       if (value.length == 13 && RegExp(r'^[0-9]+$').hasMatch(value)) {
         _isCnicValid = true;
         _cnicErrorMessage = '';
@@ -62,8 +58,6 @@ class _FifthPageState extends State<FifthPage> {
             : '';
       }
     });
-
-    _updateFormValidity();
   }
 
   void _validatePin(String value) {
@@ -78,27 +72,13 @@ class _FifthPageState extends State<FifthPage> {
             : '';
       }
     });
-
-    _updateFormValidity();
   }
 
-  void _updateFormValidity() {
-    setState(() {
-      // Update the overall form validity
-      _isFormValid = _isCnicValid && _isPinValid;
-    });
-  }
-
-  bool _isFormValid = false;
+  bool get _isFormValid => _isCnicValid && _isPinValid;
 
   void _onNextPressed() {
-    if (_isFormValid) {
-      // Navigate to the main page
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => MainPage()),
-            (route) => false,
-      );
-    }
+    // Simulate verification process
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => SixthPage()));
   }
 
   @override
@@ -143,7 +123,7 @@ class _FifthPageState extends State<FifthPage> {
                       focusNode: _cnicFocusNode,
                       controller: _cnicController,
                       onChanged: _validateCnic,
-                      cursorColor: Color(0xFF00A153), // Change the cursor color
+                      cursorColor: Color(0xFF00A153),
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -156,11 +136,11 @@ class _FifthPageState extends State<FifthPage> {
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(color: Color(0xFFD6D6D6)), // Color when not focused
+                          borderSide: BorderSide(color: Color(0xFFD6D6D6)),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(color: Color(0xFF00A153)), // Change border color when focused
+                          borderSide: BorderSide(color: Color(0xFF00A153)),
                         ),
                       ),
                     ),
@@ -178,11 +158,10 @@ class _FifthPageState extends State<FifthPage> {
                       focusNode: _pinFocusNode,
                       controller: _pinController,
                       onChanged: _validatePin,
-                      cursorColor: Color(0xFF00A153), // Change the cursor color
+                      cursorColor: Color(0xFF00A153),
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(6),
                       ],
                       decoration: InputDecoration(
                         hintText: 'Enter your PIN',
@@ -192,11 +171,11 @@ class _FifthPageState extends State<FifthPage> {
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(color: Color(0xFFD6D6D6)), // Color when not focused
+                          borderSide: BorderSide(color: Color(0xFFD6D6D6)),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(color: Color(0xFF00A153)), // Change border color when focused
+                          borderSide: BorderSide(color: Color(0xFF00A153)),
                         ),
                       ),
                     ),
@@ -224,7 +203,7 @@ class _FifthPageState extends State<FifthPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(11),
                         ),
-                        minimumSize: Size(298, 60), // Set the size
+                        minimumSize: Size(298, 60),
                       ),
                       child: Text(
                         'Next',
