@@ -14,7 +14,7 @@ class FirstPage extends StatelessWidget {
               children: [
                 Text(
                   'Are you ready to vote?',
-                  textAlign: TextAlign.right, // Align text to the left
+                  textAlign: TextAlign.left, // Align text to the left
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
