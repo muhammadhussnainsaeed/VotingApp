@@ -31,17 +31,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (BuildContext context) {
         return LogoutDialog(
           onLogoutConfirmed: () {
+            // Clear the text fields (if needed)
             _cnicController.clear();
             _pinController.clear();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => FifthPage(controller: widget.controller)),
-            );
+
+            // Perform logout actions (replace with your actual logout logic)
+            // For example, clear user session, navigate to login screen, etc.
+
+            // For illustration, directly pop back to the login screen
+            Navigator.of(context).popUntil((route) => route.isFirst);
           },
         );
       },
     );
   }
+
 
   @override
   void dispose() {

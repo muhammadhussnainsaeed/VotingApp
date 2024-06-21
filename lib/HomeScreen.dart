@@ -28,12 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
           'should be able to support, not how to increase it in your own project.',
       'image': 'assets/images/cand.jpg',
       'party': 'PMLN',
-      'flag': 'assets/images/ali.jpg',
     },
     {
       'name': 'Tiger A.',
       'description': 'The tiger is known for its majestic appearance and strength...',
       'image': 'assets/images/uba.jpeg',
+      'party': 'PMLN',
     },
   ];
 
@@ -46,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       'name': 'Tiger K',
       'description': 'The tiger is known for its majestic appearance and strength...',
+      'party': 'abc',
       'image': 'assets/images/tiger.jpg',
     },
     {
@@ -77,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _pinController.clear();
 
             // Navigate to FifthPage with the controller
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (_) => FifthPage(controller: widget.controller)),
             );
@@ -86,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
 
   void _selectNational() {
     setState(() {
@@ -170,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 15),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(10),
                   color: isNationalSelected ? Color(0xFF00A153) : Colors.grey[400],
                 ),
                 child: Center(
@@ -179,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       color: isNationalSelected ? Colors.white : Colors.black,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 15,
                     ),
                   ),
                 ),
@@ -192,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 15),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(10),
                   color: isNationalSelected ? Colors.grey[400] : Color(0xFF00A153),
                 ),
                 child: Center(
@@ -201,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       color: isNationalSelected ? Colors.black : Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 15,
                     ),
                   ),
                 ),
@@ -220,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(
           'Candidates (${candidates.length})',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -250,12 +252,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       candidate['name'] ?? 'Candidate Name',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 4),
                     Text(
                       candidate['party'] ?? 'Party',
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                      style: TextStyle(fontSize: 14, color: Color(0xFF00A153)),
                     ),
                   ],
                 ),
@@ -264,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 16),
             Text(
               candidate['description'] ?? 'No description available',
-              maxLines: 3,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
             Align(
@@ -275,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: Text(
                   'See more',
-                  style: TextStyle(color: Colors.blue),
+                  style: TextStyle(color: Color(0xFF00A153)),
                 ),
               ),
             ),

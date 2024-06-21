@@ -11,8 +11,24 @@ class PersonalDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Personal Details'),
+        title: Text(
+          'Personal Details',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        automaticallyImplyLeading: false, // Disable the back button
+        actions: [
+          IconButton(
+            icon: Icon(Icons.cancel_outlined),
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the screen
+            },
+          ),
+        ],
       ),
+      backgroundColor: Colors.grey[300], // Set the background color to grey
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -27,7 +43,6 @@ class PersonalDetailsScreen extends StatelessWidget {
             _buildDetailRow('CNIC', cnic),
             _buildDetailRow('Date of Birth', '01-01-1990'),
             _buildDetailRow('District', 'XYZ District'),
-
           ],
         ),
       ),
@@ -44,13 +59,16 @@ class PersonalDetailsScreen extends StatelessWidget {
             '$label:',
             style: TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.bold, // Make the text bold
+              fontWeight: FontWeight.bold, // Make the label text bold
             ),
           ),
           SizedBox(width: 10),
           Text(
             value,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600, // Make the value text slightly bolder
+            ),
           ),
         ],
       ),

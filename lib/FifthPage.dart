@@ -16,8 +16,8 @@ class _FifthPageState extends State<FifthPage> {
   final TextEditingController _pinController = TextEditingController();
   final FocusNode _cnicFocusNode = FocusNode();
   final FocusNode _pinFocusNode = FocusNode();
-  bool _isCnicValid = true;
-  bool _isPinValid = true;
+  bool _isCnicValid = false;
+  bool _isPinValid = false;
   String _cnicErrorMessage = '';
   String _pinErrorMessage = '';
 
@@ -41,7 +41,6 @@ class _FifthPageState extends State<FifthPage> {
 
   void _handleFocusChange() {
     if (_cnicFocusNode.hasFocus || _pinFocusNode.hasFocus) {
-      // Trigger a rebuild when the focus state changes
       setState(() {});
     }
   }
@@ -53,7 +52,8 @@ class _FifthPageState extends State<FifthPage> {
         _cnicErrorMessage = '';
       } else {
         _isCnicValid = false;
-        _cnicErrorMessage = value.isNotEmpty && !RegExp(r'^[0-9]+$').hasMatch(value)
+        _cnicErrorMessage =
+        value.isNotEmpty && !RegExp(r'^[0-9]+$').hasMatch(value)
             ? 'Only 13 numbers are allowed'
             : '';
       }
@@ -67,7 +67,8 @@ class _FifthPageState extends State<FifthPage> {
         _pinErrorMessage = '';
       } else {
         _isPinValid = false;
-        _pinErrorMessage = value.isNotEmpty && !RegExp(r'^[0-9]+$').hasMatch(value)
+        _pinErrorMessage =
+        value.isNotEmpty && !RegExp(r'^[0-9]+$').hasMatch(value)
             ? 'Only 6 numbers are allowed'
             : '';
       }
@@ -119,31 +120,7 @@ class _FifthPageState extends State<FifthPage> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    TextField(
-                      focusNode: _cnicFocusNode,
-                      controller: _cnicController,
-                      onChanged: _validateCnic,
-                      cursorColor: Color(0xFF00A153),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      decoration: InputDecoration(
-                        hintText: 'Enter your CNIC',
-                        hintStyle: TextStyle(
-                          color: Color(0xFF939393),
-                          fontSize: 15,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(color: Color(0xFFD6D6D6)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(color: Color(0xFF00A153)),
-                        ),
-                      ),
-                    ),
+                    _buildPinTextField(_cnicController, 'Enter your CNIC'),
                     SizedBox(height: 2),
                     if (_cnicErrorMessage.isNotEmpty)
                       Text(
@@ -154,31 +131,7 @@ class _FifthPageState extends State<FifthPage> {
                         ),
                       ),
                     SizedBox(height: 20),
-                    TextField(
-                      focusNode: _pinFocusNode,
-                      controller: _pinController,
-                      onChanged: _validatePin,
-                      cursorColor: Color(0xFF00A153),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      decoration: InputDecoration(
-                        hintText: 'Enter your PIN',
-                        hintStyle: TextStyle(
-                          color: Color(0xFF939393),
-                          fontSize: 15,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(color: Color(0xFFD6D6D6)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(color: Color(0xFF00A153)),
-                        ),
-                      ),
-                    ),
+                    _buildPinTextField(_pinController, 'Enter your PIN'),
                     SizedBox(height: 2),
                     if (_pinErrorMessage.isNotEmpty)
                       Text(
@@ -199,7 +152,9 @@ class _FifthPageState extends State<FifthPage> {
                     child: ElevatedButton(
                       onPressed: _isFormValid ? _onNextPressed : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _isFormValid ? Color(0xFF00A153) : Color(0x7F8BEEB1),
+                        backgroundColor: _isFormValid
+                            ? Color(0xFF00A153)
+                            : Color(0x7F8BEEB1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(11),
                         ),
@@ -222,6 +177,46 @@ class _FifthPageState extends State<FifthPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPinTextField(TextEditingController controller, String label) {
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      maxLength: label == 'Enter your CNIC' ? 13 : 6,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: BorderSide(color: Color(0xFFD6D6D6)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: BorderSide(color: Color(0xFF00A153)),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: BorderSide(color: Colors.red),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: BorderSide(color: Colors.red),
+        ),
+        counterText: '',
+      ),
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(label == 'Enter your CNIC' ? 13 : 6),
+      ],
+      style: TextStyle(height: 1.5),
+      onChanged: (value) {
+        if (label == 'Enter your CNIC') {
+          _validateCnic(value);
+        } else if (label == 'Enter your PIN') {
+          _validatePin(value);
+        }
+      },
     );
   }
 }
