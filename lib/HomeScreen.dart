@@ -18,29 +18,53 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool isNationalSelected = true;
 
-  final List<Map<String, String>> candidates = [
+  List<Map<String, String>> national = [
     {
       'name': 'Candidate1',
       'description':
-      'The panda, with its endearing black-and-white coat, embodies both charm and conservation...',
+      'It is indeed possible to increase minSdkVersion, '
+          'but it took me way too much time to find it out because google searches '
+          'mostly yields as result discussions about the absolute minimum Sdk version flutter '
+          'should be able to support, not how to increase it in your own project.',
       'image': 'assets/images/cand.jpg',
+      'party': 'PMLN',
+      'flag': 'assets/images/ali.jpg',
     },
     {
       'name': 'Tiger A.',
-      'description': 'The tiger is knrown for its majestic appearance and strength...',
+      'description': 'The tiger is known for its majestic appearance and strength...',
       'image': 'assets/images/uba.jpeg',
     },
+  ];
+
+  List<Map<String, String>> provincial = [
     {
       'name': 'Tiger J.',
       'description': 'The tiger is known for its majestic appearance and strength...',
       'image': 'assets/images/ali.jpg',
     },
     {
-      'name': 'Tiger J.',
+      'name': 'Tiger K',
       'description': 'The tiger is known for its majestic appearance and strength...',
       'image': 'assets/images/tiger.jpg',
     },
+    {
+      'name': 'Tiger C',
+      'description': 'The tiger is known for its majestic appearance and strength...',
+      'image': 'assets/images/panda.jpg',
+    },
   ];
+
+  List<Map<String, String>> candidates = [];
+
+   //candidates = national;
+  @override
+  void initState()
+  {
+    super.initState();
+    candidates= national;
+  }
+
 
   void _logout(BuildContext context) {
     showDialog(
@@ -66,12 +90,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void _selectNational() {
     setState(() {
       isNationalSelected = true;
+      candidates = national;
     });
   }
 
   void _selectProvincial() {
     setState(() {
       isNationalSelected = false;
+      candidates = provincial;
     });
   }
 
@@ -114,9 +140,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: candidates.length,
                 itemBuilder: (context, index) {
                   final candidate = candidates[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: CandidateCard(candidate: candidate, screenWidth: screenWidth),
+                  return GestureDetector(
+                    onTap: () {
+                      showMoreDescription(context, candidate['name'] ?? 'Candidate', candidate['description'] ?? 'No description available');
+                    },
+                    child: _buildCandidateCard(candidate),
                   );
                 },
               ),
@@ -128,60 +156,55 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSelectionToggle(double screenWidth) {
-    double toggleWidth = screenWidth - 60; // 60 accounts for padding on both sides
-    double buttonWidth = (toggleWidth - 30) / 2; // 30 accounts for the space between the buttons
-
     return Container(
-      width: toggleWidth,
-      height: 55,
-      child: Stack(
+      width: screenWidth,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.grey[400],
+      ),
+      child: Row(
         children: [
-          Positioned(
-            left: 0,
-            top: 0,
-            child: Container(
-              width: toggleWidth,
-              height: 55,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7),
+          Expanded(
+            child: GestureDetector(
+              onTap: _selectNational,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: isNationalSelected ? Color(0xFF00A153) : Colors.grey[400],
+                ),
+                child: Center(
+                  child: Text(
+                    'National',
+                    style: TextStyle(
+                      color: isNationalSelected ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-          Positioned(
-            left: 12,
-            top: 11,
-            child: Container(
-              width: toggleWidth - 24,
-              height: 35,
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: buttonWidth + 2,
-                    top: 2.47,
-                    child: Opacity(
-                      opacity: 0.80,
-                      child: Transform(
-                        transform: Matrix4.identity()..rotateZ(1.57),
-                        child: Container(
-                          width: 30.24,
-                          decoration: ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                width: 1,
-                                color: Color(0xFF939393),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+          Expanded(
+            child: GestureDetector(
+              onTap: _selectProvincial,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: isNationalSelected ? Colors.grey[400] : Color(0xFF00A153),
+                ),
+                child: Center(
+                  child: Text(
+                    'Provincial',
+                    style: TextStyle(
+                      color: isNationalSelected ? Colors.black : Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
                   ),
-                  _buildToggleOption('National Assembly', _selectNational, isNationalSelected, width: buttonWidth - 10),
-                  _buildToggleOption('Provincial Assembly', _selectProvincial, !isNationalSelected, left: buttonWidth + 15, width: buttonWidth - 10),
-                ],
+                ),
               ),
             ),
           ),
@@ -190,119 +213,106 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildToggleOption(String text, VoidCallback onTap, bool isSelected, {double left = 0, double width = 143}) {
-    return Positioned(
-      left: left,
-      top: 0,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: width,
-          height: 35,
-          decoration: ShapeDecoration(
-            color: isSelected ? Color(0x1900A154) : Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
+  Widget _buildCandidatesHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          'Candidates (${candidates.length})',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          child: Center(
-            child: Text(
-              text,
-              style: TextStyle(
-                color: isSelected ? Color(0xFF00A154) : Colors.black,
-                fontSize: 14,
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.w600,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCandidateCard(Map<String, String> candidate) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                if (candidate['image'] != null)
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage(candidate['image']!),
+                  ),
+                SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      candidate['name'] ?? 'Candidate Name',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      candidate['party'] ?? 'Party',
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Text(
+              candidate['description'] ?? 'No description available',
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: TextButton(
+                onPressed: () {
+                  showMoreDescription(context, candidate['name'] ?? 'Candidate', candidate['description'] ?? 'No description available');
+                },
+                child: Text(
+                  'See more',
+                  style: TextStyle(color: Colors.blue),
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildCandidatesHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'Candidates',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        Text(
-          '${candidates.length} candidates',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class CandidateCard extends StatelessWidget {
-  final Map<String, String> candidate;
-  final double screenWidth;
-
-  const CandidateCard({required this.candidate, required this.screenWidth});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: screenWidth - 32,
-          height: 96,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.white,
-          ),
-          padding: const EdgeInsets.only(left: 100, top: 10, right: 8, bottom: 10),
+  void showMoreDescription(BuildContext context, String name, String description) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                candidate['name'] ?? 'Candidate',
+                name,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 4),
+              SizedBox(height: 8),
               Text(
-                candidate['description'] ?? '',
+                description,
                 style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.normal,
+                  fontSize: 14,
                 ),
-                overflow: TextOverflow.clip,
               ),
             ],
           ),
-        ),
-        Positioned(
-          left: 15,
-          top: 13,
-          child: Container(
-            width: 72,
-            height: 69,
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: candidate['image'] != null
-                ? Image.asset(
-              candidate['image']!,
-              fit: BoxFit.cover,
-            )
-                : Container(),
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 }

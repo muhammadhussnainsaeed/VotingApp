@@ -65,6 +65,7 @@ flutter:
     - assets/images/uba.jpeg
     - assets/images/tiger.jpg
     - assets/images/panda.jpg
+    - assets/images/cand.jpg
     - assets/icons/home.png
     - assets/icons/votegreen.png
     - assets/icons/settingsgreen.png
