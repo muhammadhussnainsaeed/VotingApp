@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ResultScreen.dart';
+import 'VoteConfirmationDialog.dart'; // Import your helper class here
 
 class VoteScreen extends StatefulWidget {
   @override
@@ -8,123 +9,94 @@ class VoteScreen extends StatefulWidget {
 
 class _VoteScreenState extends State<VoteScreen> {
   bool isNationalSelected = true;
+  String? votedNationalCandidate;
+  String? votedProvincialCandidate;
+
+  List<Map<String, String>> national = [
+    {
+      'name': 'Candidate1',
+      'image': 'assets/images/cand.jpg',
+      'party': 'PMLN',
+    },
+    {
+      'name': 'Tiger A.',
+      'image': 'assets/images/uba.jpeg',
+      'party': 'PMLN',
+    },
+  ];
+
+  List<Map<String, String>> provincial = [
+    {
+      'name': 'Tiger J.',
+      'image': 'assets/images/ali.jpg',
+      'party': 'Party A',
+    },
+    {
+      'name': 'Tiger K',
+      'party': 'abc',
+      'image': 'assets/images/tiger.jpg',
+    },
+    {
+      'name': 'Tiger C',
+      'image': 'assets/images/panda.jpg',
+      'party': 'Party B',
+    },
+  ];
+
+  List<Map<String, String>> candidates = [];
+
+  @override
+  void initState() {
+    super.initState();
+    candidates = national;
+  }
 
   void _selectNational() {
     setState(() {
       isNationalSelected = true;
+      candidates = national;
     });
   }
 
   void _selectProvincial() {
     setState(() {
       isNationalSelected = false;
+      candidates = provincial;
     });
   }
 
-  Widget _buildToggleOption(String label, VoidCallback onTap, bool isSelected, {double? left, required double width}) {
-    return Positioned(
-      left: left,
-      top: 0,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: width,
-          height: 35,
-          decoration: ShapeDecoration(
-            color: isSelected ? Color(0xFF00A153) : Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(7),
-              side: BorderSide(
-                color: Color(0xFF00A153),
-                width: isSelected ? 0 : 1,
-              ),
-            ),
+  void _showVoteConfirmationDialog(BuildContext context, Map<String, String> candidate) {
+    if (isNationalSelected) {
+      if (votedNationalCandidate == null) {
+        VoteConfirmationHelper.showNationalConfirmationDialog(context, candidate, _onVoteConfirmation);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('You have already voted in the National category.'),
           ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Color(0xFF00A153),
-              fontWeight: FontWeight.bold,
-            ),
+        );
+      }
+    } else {
+      if (votedProvincialCandidate == null) {
+        VoteConfirmationHelper.showProvincialConfirmationDialog(context, candidate, _onVoteConfirmation);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('You have already voted in the Provincial category.'),
           ),
-        ),
-      ),
-    );
+        );
+      }
+    }
   }
 
-  Widget _buildSelectionToggle(double screenWidth) {
-    double toggleWidth = screenWidth - 60; // 60 accounts for padding on both sides
-    double buttonWidth = (toggleWidth - 30) / 2; // 30 accounts for the space between the buttons
-
-    return Container(
-      width: toggleWidth,
-      height: 55,
-      child: Stack(
-        children: [
-          Positioned(
-            left: 0,
-            top: 0,
-            child: Container(
-              width: toggleWidth,
-              height: 55,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            left: 12,
-            top: 11,
-            child: Container(
-              width: toggleWidth - 24,
-              height: 35,
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: buttonWidth + 2,
-                    top: 2.47,
-                    child: Opacity(
-                      opacity: 0.80,
-                      child: Transform(
-                        transform: Matrix4.identity()..rotateZ(1.57),
-                        child: Container(
-                          width: 30.24,
-                          decoration: ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                width: 1,
-                                color: Color(0xFF939393),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  _buildToggleOption(
-                    'National Assembly',
-                    _selectNational,
-                    isNationalSelected,
-                    width: buttonWidth - 10,
-                  ),
-                  _buildToggleOption(
-                    'Provincial Assembly',
-                    _selectProvincial,
-                    !isNationalSelected,
-                    left: buttonWidth + 15,
-                    width: buttonWidth - 10,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  void _onVoteConfirmation(String candidateName) {
+    setState(() {
+      if (isNationalSelected) {
+        votedNationalCandidate = candidateName;
+      } else {
+        votedProvincialCandidate = candidateName;
+      }
+    });
   }
 
   @override
@@ -133,10 +105,17 @@ class _VoteScreenState extends State<VoteScreen> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(75), // Increase the height of the AppBar
+        preferredSize: Size.fromHeight(75),
         child: AppBar(
-          title: Text('Vote', style: TextStyle(color: Colors.black)), // Set text color to black
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
+          title: Text(
+            'Elections',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -148,14 +127,14 @@ class _VoteScreenState extends State<VoteScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF00A153), // Green color
+                  backgroundColor: Color(0xFF00A153),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8), // Slightly curved corners
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 child: Text(
                   'Results',
-                  style: TextStyle(color: Colors.white), // Set text color to white
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
@@ -163,34 +142,150 @@ class _VoteScreenState extends State<VoteScreen> {
         ),
       ),
       backgroundColor: Colors.grey[300],
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: Column(
+          children: [
+            _buildSelectionToggle(screenWidth),
+            SizedBox(height: 40),
+            _buildCandidatesHeader(),
+            SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                itemCount: candidates.length,
+                itemBuilder: (context, index) {
+                  final candidate = candidates[index];
+                  return GestureDetector(
+                    onTap: () {
+                      if ((isNationalSelected && votedNationalCandidate == null) ||
+                          (!isNationalSelected && votedProvincialCandidate == null)) {
+                        _showVoteConfirmationDialog(context, candidate);
+                      }
+                    },
+                    child: _buildCandidateCard(candidate),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectionToggle(double screenWidth) {
+    return Container(
+      width: screenWidth,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.grey[400],
+      ),
+      child: Row(
         children: [
-          _buildSelectionToggle(screenWidth),
-          SizedBox(height: 40),
-          Text(
-            'Vote Screen',
-            style: TextStyle(fontSize: 24),
+          Expanded(
+            child: GestureDetector(
+              onTap: _selectNational,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: isNationalSelected ? Color(0xFF00A153) : Colors.grey[400],
+                ),
+                child: Center(
+                  child: Text(
+                    'National',
+                    style: TextStyle(
+                      color: isNationalSelected ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: _selectProvincial,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: isNationalSelected ? Colors.grey[400] : Color(0xFF00A153),
+                ),
+                child: Center(
+                  child: Text(
+                    'Provincial',
+                    style: TextStyle(
+                      color: isNationalSelected ? Colors.black : Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
-}
 
-class ResultsScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Results', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
-      ),
-      backgroundColor: Colors.grey[300],
-      body: Center(
-        child: Text(
-          'Results Screen',
-          style: TextStyle(fontSize: 24),
+  Widget _buildCandidatesHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          'Candidates (${candidates.length})',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCandidateCard(Map<String, String> candidate) {
+    bool isVotedCandidate = (isNationalSelected && candidate['name'] == votedNationalCandidate) ||
+        (!isNationalSelected && candidate['name'] == votedProvincialCandidate);
+
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      color: isVotedCandidate ? Colors.grey : Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            if (candidate['image'] != null)
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: AssetImage(candidate['image']!),
+              ),
+            SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  candidate['name'] ?? 'Candidate Name',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: isVotedCandidate ? Colors.grey[600] : Colors.black,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  candidate['party'] ?? 'Party',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isVotedCandidate ? Colors.grey[600] : Color(0xFF00A153),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

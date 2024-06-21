@@ -42,7 +42,6 @@ class ConfirmationDialog extends StatelessWidget {
         TextButton(
           onPressed: () {
             Navigator.of(context).pop(); // Close the dialog
-            // Perform logout action
             onConfirmationConfirmed();
           },
           child: Container(

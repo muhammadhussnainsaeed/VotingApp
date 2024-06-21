@@ -10,9 +10,10 @@ class _SixthPageState extends State<SixthPage> {
   @override
   void initState() {
     super.initState();
+    // Simulating verification process with a delay
     Future.delayed(Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => MainPage()),
+        MaterialPageRoute(builder: (context) => MainPage(isLoggedIn: true)),
       );
     });
   }
