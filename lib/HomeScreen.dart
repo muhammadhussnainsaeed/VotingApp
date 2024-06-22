@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'FifthPage.dart';
 import 'LogoutDialog.dart';
+import 'package:http/http.dart' as http;
+import 'dart:typed_data';
 
 class HomeScreen extends StatefulWidget {
   final String name;
@@ -17,47 +20,12 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _pinController = TextEditingController();
 
   bool isNationalSelected = true;
-
-  List<Map<String, String>> national = [
-    {
-      'name': 'Candidate1',
-      'description': 'It is indeed possible to increase minSdkVersion, but it took me way too much time to find it out because google searches mostly yields as result discussions about the absolute minimum Sdk version flutter should be able to support, not how to increase it in your own project.',
-      'image': 'assets/images/cand.jpg',
-      'party': 'PMLN',
-    },
-    {
-      'name': 'Tiger A.',
-      'description': 'The tiger is known for its majestic appearance and strength...',
-      'image': 'assets/images/uba.jpeg',
-      'party': 'PMLN',
-    },
-  ];
-
-  List<Map<String, String>> provincial = [
-    {
-      'name': 'Tiger J.',
-      'description': 'The tiger is known for its majestic appearance and strength...',
-      'image': 'assets/images/ali.jpg',
-    },
-    {
-      'name': 'Tiger K',
-      'description': 'The tiger is known for its majestic appearance and strength...',
-      'party': 'abc',
-      'image': 'assets/images/tiger.jpg',
-    },
-    {
-      'name': 'Tiger C',
-      'description': 'The tiger is known for its majestic appearance and strength...',
-      'image': 'assets/images/panda.jpg',
-    },
-  ];
-
-  List<Map<String, String>> candidates = [];
+  List<Map<String, dynamic>> candidates = [];
 
   @override
   void initState() {
     super.initState();
-    candidates = national;
+    fetchCandidates();
   }
 
   void _logout(BuildContext context) {
@@ -66,11 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         return LogoutDialog(
           onLogoutConfirmed: () {
-            // Clear the text fields
             _cnicController.clear();
             _pinController.clear();
-
-            // Navigate to FifthPage with the controller
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (_) => FifthPage(controller: widget.controller)),
@@ -81,17 +46,59 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Uint8List _decodeBase64Image(String base64String) {
+    try {
+      return base64Decode(base64String);
+    } catch (e) {
+      return Uint8List(0); // Return an empty Uint8List in case of an error
+    }
+  }
+
+  Future<void> fetchCandidates() async {
+    try {
+      final response = await http.get(Uri.parse('https://localhost:7177/api/Candidates/${isNationalSelected ? "national" : "provincial"}'));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        setState(() {
+          candidates = data.map((candidate) {
+
+            // Extract individual fields with null checks
+            final name = candidate['name'] ?? 'No Name';
+            final description = candidate['description'] ?? 'No description available';
+            final image = candidate['candImage'];
+            final party = candidate['party'] ?? 'No Party';
+            final constituency = candidate['constituency'] ?? 'No Constituency';
+
+            return {
+              'name': name,
+              'description': description,
+              'image': image,
+              'party': party,
+              'constituency': constituency,
+            };
+          }).toList();
+        });
+      } else {
+        throw Exception('Failed to load candidates');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   void _selectNational() {
     setState(() {
       isNationalSelected = true;
-      candidates = national;
+      fetchCandidates();
     });
   }
 
   void _selectProvincial() {
     setState(() {
       isNationalSelected = false;
-      candidates = provincial;
+      fetchCandidates();
     });
   }
 
@@ -114,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               IconButton(
                 icon: Icon(Icons.logout, color: Colors.black),
-                onPressed: () => _logout(context), // Corrected onPressed
+                onPressed: () => _logout(context),
               ),
             ],
           ),
@@ -222,7 +229,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCandidateCard(Map<String, String> candidate) {
+  Widget _buildCandidateCard(Map<String, dynamic> candidate) {
+    Uint8List imageBytes = _decodeBase64Image(candidate['image']);
+
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -236,7 +245,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (candidate['image'] != null)
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: AssetImage(candidate['image']!),
+                    backgroundImage: imageBytes.isNotEmpty ? MemoryImage(imageBytes) : null,
+                    child: imageBytes.isEmpty ? const Icon(Icons.error) : null,
                   ),
                 SizedBox(width: 16),
                 Column(
@@ -286,23 +296,15 @@ class _HomeScreenState extends State<HomeScreen> {
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 name,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
-              Text(
-                description,
-                style: TextStyle(
-                  fontSize: 14,
-                ),
-              ),
+              Text(description),
             ],
           ),
         );
