@@ -21,11 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, String>> national = [
     {
       'name': 'Candidate1',
-      'description':
-      'It is indeed possible to increase minSdkVersion, '
-          'but it took me way too much time to find it out because google searches '
-          'mostly yields as result discussions about the absolute minimum Sdk version flutter '
-          'should be able to support, not how to increase it in your own project.',
+      'description': 'It is indeed possible to increase minSdkVersion, but it took me way too much time to find it out because google searches mostly yields as result discussions about the absolute minimum Sdk version flutter should be able to support, not how to increase it in your own project.',
       'image': 'assets/images/cand.jpg',
       'party': 'PMLN',
     },
@@ -58,14 +54,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Map<String, String>> candidates = [];
 
-   //candidates = national;
   @override
-  void initState()
-  {
+  void initState() {
     super.initState();
-    candidates= national;
+    candidates = national;
   }
-
 
   void _logout(BuildContext context) {
     showDialog(
@@ -87,7 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-
 
   void _selectNational() {
     setState(() {

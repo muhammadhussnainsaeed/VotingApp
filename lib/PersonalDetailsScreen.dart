@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
 class PersonalDetailsScreen extends StatelessWidget {
   final String cnic;
+  final String name;
+  final String district;
+  final String dob;
+  final String image;
 
-  PersonalDetailsScreen({required this.cnic});
+  PersonalDetailsScreen({required this.image,required this.cnic,required this.name,required this.district,required this.dob});
 
   String get profilePic => 'assets/images/panda.jpg';
 
   @override
   Widget build(BuildContext context) {
+    Uint8List imageBytes = _decodeBase64Image(image);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -35,18 +43,26 @@ class PersonalDetailsScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage(profilePic),
+              backgroundImage: imageBytes.isNotEmpty ? MemoryImage(imageBytes) : null,
               onBackgroundImageError: (_, __) => const Icon(Icons.error),
             ),
             SizedBox(height: 20),
-            _buildDetailRow('Name', 'John Doe'),
+            _buildDetailRow('Name', name),
             _buildDetailRow('CNIC', cnic),
-            _buildDetailRow('Date of Birth', '01-01-1990'),
-            _buildDetailRow('District', 'XYZ District'),
+            _buildDetailRow('Date of Birth', dob),
+            _buildDetailRow('District', district),
           ],
         ),
       ),
     );
+  }
+
+  Uint8List _decodeBase64Image(String base64String) {
+    try {
+      return base64Decode(base64String);
+    } catch (e) {
+      return Uint8List(0); // Return an empty Uint8List in case of an error
+    }
   }
 
   Widget _buildDetailRow(String label, String value) {

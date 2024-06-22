@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'HomeScreen.dart';
 import 'SettingsScreen.dart';
 import 'VoteScreen.dart';
-import 'FifthPage.dart'; // Import your LoginScreen
+import 'model.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -12,15 +12,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainPage(isLoggedIn: true), // Set MainPage as the home widget
+      home: MainPage(isLoggedIn: true, userData: {'name': 'John Doe', 'cnic': '1231231232131', 'image': 'assets/images/panda.jpg'}),
     );
   }
 }
 
 class MainPage extends StatefulWidget {
   final bool isLoggedIn;
+  final Map<String, dynamic> userData;
 
-  MainPage({Key? key, required this.isLoggedIn}) : super(key: key);
+  MainPage({Key? key, required this.isLoggedIn, required this.userData}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -37,9 +38,9 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _widgetOptions = <Widget>[
-      HomeScreen(name: 'John Doe', controller: _controller,),
+      HomeScreen(name: widget.userData['Name'], controller: _controller,),
       VoteScreen(),
-      SettingsScreen(name: 'John Doe', image: 'assets/images/panda.jpg', cnic: '1231231232131', controller: _controller,),
+      SettingsScreen(name: widget.userData['Name'], image: widget.userData['ImageData'], cnic: widget.userData['CNIC'], district: widget.userData['District'],dob: widget.userData['DateOfBirth'], controller: _controller,),
     ];
   }
 

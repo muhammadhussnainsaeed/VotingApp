@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'MainPage.dart';
 
 class SixthPage extends StatefulWidget {
+  final Map<String, dynamic> userData;
+
+  SixthPage({required this.userData});
+
   @override
   _SixthPageState createState() => _SixthPageState();
 }
@@ -13,7 +17,9 @@ class _SixthPageState extends State<SixthPage> {
     // Simulating verification process with a delay
     Future.delayed(Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => MainPage(isLoggedIn: true)),
+        MaterialPageRoute(
+          builder: (context) => MainPage(isLoggedIn: true, userData: widget.userData),
+        ),
       );
     });
   }

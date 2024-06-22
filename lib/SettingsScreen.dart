@@ -3,18 +3,24 @@ import 'ChangePinScreen.dart';
 import 'FifthPage.dart';
 import 'LogoutDialog.dart';
 import 'PersonalDetailsScreen.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
 class SettingsScreen extends StatefulWidget {
   final String name;
   final String image;
-  final PageController controller;
   final String cnic;
+  final String district;
+  final String dob;
+  final PageController controller;
 
   SettingsScreen({
     required this.name,
     required this.image,
-    required this.controller,
     required this.cnic,
+    required this.district,
+    required this.dob,
+    required this.controller,
   });
 
   @override
@@ -46,7 +52,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-
   @override
   void dispose() {
     _cnicController.dispose();
@@ -54,8 +59,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.dispose();
   }
 
+  Uint8List _decodeBase64Image(String base64String) {
+    try {
+      return base64Decode(base64String);
+    } catch (e) {
+      return Uint8List(0); // Return an empty Uint8List in case of an error
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    Uint8List imageBytes = _decodeBase64Image(widget.image);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(75),
@@ -71,8 +86,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundImage: AssetImage(widget.image),
-                  onBackgroundImageError: (_, __) => const Icon(Icons.error),
+                  backgroundImage: imageBytes.isNotEmpty ? MemoryImage(imageBytes) : null,
+                  child: imageBytes.isEmpty ? const Icon(Icons.error) : null,
                 ),
                 SizedBox(width: 10),
                 Text(
@@ -104,7 +119,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 icon: Icons.person,
                 label: 'Personal Details',
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => PersonalDetailsScreen(cnic: widget.cnic)));
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => PersonalDetailsScreen(image: widget.image,cnic: widget.cnic,name: widget.name,district: widget.district,dob: widget.dob)));
                 },
               ),
               SizedBox(height: 8),
@@ -113,15 +128,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 label: 'Logout',
                 onTap: () {
                   _logout(context);
-                  // showDialog(
-                  // context: context,
-                  //   builder: (_) =>
-                  //       LogoutDialog(
-                  //     onLogoutConfirmed: () {
-                  //       _logout(context);
-                  //     },
-                  //   ),
-                  // );
                 },
               ),
               SizedBox(height: 40),
