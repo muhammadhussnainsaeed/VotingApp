@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'Group3.dart'; // Ensure this is the correct import path for Group3
 import 'ConfirmationDialog.dart'; // Import the ConfirmationDialog
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 
 class ChangePinScreen extends StatefulWidget {
+  final String cnic;
+  ChangePinScreen({required this.cnic});
+
   @override
   _ChangePinScreenState createState() => _ChangePinScreenState();
 }
@@ -25,6 +31,7 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
     String oldPin = _oldPinController.text;
     String newPin = _newPinController.text;
     String confirmPin = _confirmPinController.text;
+
 
     if (oldPin.length != 6 || newPin.length != 6 || confirmPin.length != 6) {
       return false;
@@ -62,12 +69,40 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
     );
   }
 
-  void _performPinChange() {
-    // Perform PIN change operation here
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('PIN changed successfully!')),
+  void _performPinChange() async {
+    final url = 'https://localhost:7177/api/people/changePin';
+
+    final response = await http.put(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'CNIC': widget.cnic,
+        'OldPin': int.parse(_oldPinController.text),
+        'NewPin': int.parse(_newPinController.text),
+      }),
     );
+
+    if (response.statusCode == 204) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('PIN changed successfully!')),
+      );
+    } else if (response.statusCode == 401) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Old PIN is incorrect.')),
+      );
+    } else if (response.statusCode == 404) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Person not found.')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to change PIN.')),
+      );
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

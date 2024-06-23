@@ -72,8 +72,8 @@ class _VoteScreenState extends State<VoteScreen> {
         setState(() {
           votedNationalCandidateCNIC = voteStatus['votedNationalCandidate'];
           votedProvincialCandidateCNIC = voteStatus['votedProvincialCandidate'];
-          print({votedProvincialCandidateCNIC});
-        });
+        }
+        );
 
       } else {
         throw Exception('Failed to check vote status');

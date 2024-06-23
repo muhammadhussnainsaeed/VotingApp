@@ -143,7 +143,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 icon: Icons.pin,
                 label: 'Change PIN',
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => ChangePinScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => ChangePinScreen(cnic: widget.cnic)));
                 },
               ),
             ],
