@@ -72,6 +72,7 @@ class _VoteScreenState extends State<VoteScreen> {
         setState(() {
           votedNationalCandidateCNIC = voteStatus['votedNationalCandidate'];
           votedProvincialCandidateCNIC = voteStatus['votedProvincialCandidate'];
+          print({votedProvincialCandidateCNIC});
         });
 
       } else {
@@ -175,10 +176,7 @@ class _VoteScreenState extends State<VoteScreen> {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ResultsScreen()),
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ResultsScreen(userDistrict:widget.userDistrict)));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF00A153),
