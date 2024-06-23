@@ -7,9 +7,10 @@ import 'dart:typed_data';
 
 class HomeScreen extends StatefulWidget {
   final String name;
+  final String district;
   final dynamic controller;
 
-  HomeScreen({required this.name, this.controller});
+  HomeScreen({required this.name,required this.district, this.controller});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -56,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchCandidates() async {
     try {
-      final response = await http.get(Uri.parse('https://localhost:7177/api/Candidates/${isNationalSelected ? "national" : "provincial"}'));
+      final response = await http.get(Uri.parse('https://localhost:7177/api/Candidates/${isNationalSelected ? "national" : "provincial"}/${widget.district}'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'HomeScreen.dart';
 import 'SettingsScreen.dart';
 import 'VoteScreen.dart';
-import 'model.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -38,8 +37,8 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _widgetOptions = <Widget>[
-      HomeScreen(name: widget.userData['Name'], controller: _controller,),
-      VoteScreen(),
+      HomeScreen(name: widget.userData['Name'],district: widget.userData['District'], controller: _controller,),
+      VoteScreen(userCNIC: widget.userData['CNIC'], userDistrict: widget.userData['District']),
       SettingsScreen(name: widget.userData['Name'], image: widget.userData['ImageData'], cnic: widget.userData['CNIC'], district: widget.userData['District'],dob: widget.userData['DateOfBirth'], controller: _controller,),
     ];
   }
