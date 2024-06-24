@@ -1,73 +1,91 @@
 import 'package:flutter/material.dart';
 import 'ResultScreen.dart';
-import 'VoteConfirmationDialog.dart'; // Import your helper class here
+import 'VoteConfirmationDialog.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:typed_data';
 
 class VoteScreen extends StatefulWidget {
+  final String userDistrict; // User's district/constituency
+  final String userCNIC;
+
+  VoteScreen({required this.userCNIC, required this.userDistrict});
+
   @override
   _VoteScreenState createState() => _VoteScreenState();
 }
 
 class _VoteScreenState extends State<VoteScreen> {
   bool isNationalSelected = true;
-  String? votedNationalCandidate;
-  String? votedProvincialCandidate;
-
-  List<Map<String, String>> national = [
-    {
-      'name': 'Candidate1',
-      'image': 'assets/images/cand.jpg',
-      'party': 'PMLN',
-    },
-    {
-      'name': 'Tiger A.',
-      'image': 'assets/images/uba.jpeg',
-      'party': 'PMLN',
-    },
-  ];
-
-  List<Map<String, String>> provincial = [
-    {
-      'name': 'Tiger J.',
-      'image': 'assets/images/ali.jpg',
-      'party': 'Party A',
-    },
-    {
-      'name': 'Tiger K',
-      'party': 'abc',
-      'image': 'assets/images/tiger.jpg',
-    },
-    {
-      'name': 'Tiger C',
-      'image': 'assets/images/panda.jpg',
-      'party': 'Party B',
-    },
-  ];
-
-  List<Map<String, String>> candidates = [];
+  String? votedNationalCandidateCNIC;
+  String? votedProvincialCandidateCNIC;
+  List<Map<String, dynamic>> candidates = [];
 
   @override
   void initState() {
     super.initState();
-    candidates = national;
+    _fetchCandidatesAndCheckVotes();
   }
 
-  void _selectNational() {
-    setState(() {
-      isNationalSelected = true;
-      candidates = national;
-    });
+  Future<void> _fetchCandidatesAndCheckVotes() async {
+    await _fetchCandidates();
+    await _checkVotes();
   }
 
-  void _selectProvincial() {
-    setState(() {
-      isNationalSelected = false;
-      candidates = provincial;
-    });
+  Future<void> _fetchCandidates() async {
+    try {
+      final response = await http.get(Uri.parse('https://localhost:7177/api/Candidates/${isNationalSelected ? "national" : "provincial"}/${widget.userDistrict}'));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        setState(() {
+          candidates = data.map((candidate) {
+            final name = candidate['name'] ?? 'No Name';
+            final image = candidate['candImage'];
+            final party = candidate['party'] ?? 'No Party';
+            final cnic = candidate['cnic'] ?? ''; // Handle null case for 'cnic'
+
+            return {
+              'name': name,
+              'image': image,
+              'party': party,
+              'cnic': cnic,
+            };
+          }).toList();
+        });
+      } else {
+        throw Exception('Failed to load candidates');
+      }
+    } catch (e) {
+      print('Error fetching candidates: $e');
+    }
   }
 
-  void _showVoteConfirmationDialog(BuildContext context, Map<String, String> candidate) {
+  Future<void> _checkVotes() async {
+    try {
+      final response = await http.get(Uri.parse('https://localhost:7177/api/Votes/checkVotes/${widget.userCNIC}'));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> voteStatus = jsonDecode(response.body);
+
+        setState(() {
+          votedNationalCandidateCNIC = voteStatus['votedNationalCandidate'];
+          votedProvincialCandidateCNIC = voteStatus['votedProvincialCandidate'];
+        }
+        );
+
+      } else {
+        throw Exception('Failed to check vote status');
+      }
+    } catch (e) {
+      print('Error checking votes: $e');
+    }
+  }
+
+  void _showVoteConfirmationDialog(BuildContext context, Map<String, dynamic> candidate) {
     if (isNationalSelected) {
-      if (votedNationalCandidate == null) {
+      if (votedNationalCandidateCNIC == null) {
         VoteConfirmationHelper.showNationalConfirmationDialog(context, candidate, _onVoteConfirmation);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -77,7 +95,7 @@ class _VoteScreenState extends State<VoteScreen> {
         );
       }
     } else {
-      if (votedProvincialCandidate == null) {
+      if (votedProvincialCandidateCNIC == null) {
         VoteConfirmationHelper.showProvincialConfirmationDialog(context, candidate, _onVoteConfirmation);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -89,14 +107,51 @@ class _VoteScreenState extends State<VoteScreen> {
     }
   }
 
-  void _onVoteConfirmation(String candidateName) {
+  void _onVoteConfirmation(String candidateCNIC) async {
     setState(() {
       if (isNationalSelected) {
-        votedNationalCandidate = candidateName;
+        votedNationalCandidateCNIC = candidateCNIC;
       } else {
-        votedProvincialCandidate = candidateName;
+        votedProvincialCandidateCNIC = candidateCNIC;
       }
     });
+
+    final vote = {
+      'CNIC': widget.userCNIC,
+      'CandidateCNIC': candidateCNIC,
+      'Constituency': widget.userDistrict,
+      'NationalAssembly': isNationalSelected,
+      'ProvincialAssembly': !isNationalSelected,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://localhost:7177/api/Votes'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(vote),
+      );
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Vote submitted successfully.'),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to submit vote.'),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error submitting vote: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error submitting vote.'),
+        ),
+      );
+    }
   }
 
   @override
@@ -121,10 +176,7 @@ class _VoteScreenState extends State<VoteScreen> {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ResultsScreen()),
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ResultsScreen(userDistrict:widget.userDistrict)));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF00A153),
@@ -155,15 +207,11 @@ class _VoteScreenState extends State<VoteScreen> {
                 itemCount: candidates.length,
                 itemBuilder: (context, index) {
                   final candidate = candidates[index];
-                  return GestureDetector(
-                    onTap: () {
-                      if ((isNationalSelected && votedNationalCandidate == null) ||
-                          (!isNationalSelected && votedProvincialCandidate == null)) {
-                        _showVoteConfirmationDialog(context, candidate);
-                      }
-                    },
-                    child: _buildCandidateCard(candidate),
-                  );
+                  String candidateCNIC = candidate['cnic'] ?? ''; // Handle null case for 'cnic'
+                  bool isAlreadyVoted = (isNationalSelected && votedNationalCandidateCNIC == candidateCNIC) ||
+                      (!isNationalSelected && votedProvincialCandidateCNIC == candidateCNIC);
+
+                  return _buildCandidateCard(candidate, isAlreadyVoted);
                 },
               ),
             ),
@@ -184,7 +232,12 @@ class _VoteScreenState extends State<VoteScreen> {
         children: [
           Expanded(
             child: GestureDetector(
-              onTap: _selectNational,
+              onTap: () {
+                setState(() {
+                  isNationalSelected = true;
+                  _fetchCandidatesAndCheckVotes(); // Fetch new candidates and check votes when category changes
+                });
+              },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 15),
                 decoration: BoxDecoration(
@@ -206,7 +259,12 @@ class _VoteScreenState extends State<VoteScreen> {
           ),
           Expanded(
             child: GestureDetector(
-              onTap: _selectProvincial,
+              onTap: () {
+                setState(() {
+                  isNationalSelected = false;
+                  _fetchCandidatesAndCheckVotes(); // Fetch new candidates and check votes when category changes
+                });
+              },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 15),
                 decoration: BoxDecoration(
@@ -232,60 +290,59 @@ class _VoteScreenState extends State<VoteScreen> {
   }
 
   Widget _buildCandidatesHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          'Candidates (${candidates.length})',
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        'Candidates (${candidates.length})',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildCandidateCard(Map<String, String> candidate) {
-    bool isVotedCandidate = (isNationalSelected && candidate['name'] == votedNationalCandidate) ||
-        (!isNationalSelected && candidate['name'] == votedProvincialCandidate);
+  Uint8List _decodeBase64Image(String? base64String) {
+    try {
+      if (base64String != null) {
+        return base64Decode(base64String);
+      } else {
+        return Uint8List(0); // Return an empty Uint8List if base64String is null
+      }
+    } catch (e) {
+      return Uint8List(0); // Return an empty Uint8List in case of an error
+    }
+  }
 
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: isVotedCandidate ? Colors.grey : Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            if (candidate['image'] != null)
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: AssetImage(candidate['image']!),
-              ),
-            SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  candidate['name'] ?? 'Candidate Name',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: isVotedCandidate ? Colors.grey[600] : Colors.black,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  candidate['party'] ?? 'Party',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: isVotedCandidate ? Colors.grey[600] : Color(0xFF00A153),
-                  ),
-                ),
-              ],
+  Widget _buildCandidateCard(Map<String, dynamic> candidate, bool isAlreadyVoted) {
+    Uint8List imageBytes = _decodeBase64Image(candidate['image']);
+
+    return GestureDetector(
+      onTap: isAlreadyVoted
+          ? null
+          : () {
+        _showVoteConfirmationDialog(context, candidate);
+      },
+      child: Card(
+        color: isAlreadyVoted ? Colors.grey[400] : Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ListTile(
+            leading: CircleAvatar(
+              radius: 30,
+              backgroundImage: imageBytes.isNotEmpty ? MemoryImage(imageBytes) : null,
+              child: imageBytes.isEmpty ? const Icon(Icons.error) : null,
             ),
-          ],
+            title: Text(
+              candidate['name'],
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(candidate['party']),
+          ),
         ),
       ),
     );

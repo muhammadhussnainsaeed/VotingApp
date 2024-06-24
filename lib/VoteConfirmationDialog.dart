@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class VoteConfirmationHelper {
-  static void showProvincialConfirmationDialog(BuildContext context, Map<String, String> candidate, Function(String) onConfirm) {
+  static void showProvincialConfirmationDialog(BuildContext context, Map<String, dynamic> candidate, Function(String) onConfirm) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -40,7 +40,7 @@ class VoteConfirmationHelper {
             ),
             TextButton(
               onPressed: () {
-                onConfirm(candidate['name']!); // Execute the callback with candidate name
+                onConfirm(candidate['cnic']!); // Execute the callback with candidate name
                 Navigator.of(context).pop(); // Close the dialog
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -70,7 +70,7 @@ class VoteConfirmationHelper {
     );
   }
 
-  static void showNationalConfirmationDialog(BuildContext context, Map<String, String> candidate, Function(String) onConfirm) {
+  static void showNationalConfirmationDialog(BuildContext context, Map<String, dynamic> candidate, Function(String) onConfirm) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -109,7 +109,7 @@ class VoteConfirmationHelper {
             ),
             TextButton(
               onPressed: () {
-                onConfirm(candidate['name']!); // Execute the callback with candidate name
+                onConfirm(candidate['cnic']!); // Execute the callback with candidate name
                 Navigator.of(context).pop(); // Close the dialog
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

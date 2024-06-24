@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'SixthPage.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class FifthPage extends StatefulWidget {
   final PageController controller;
@@ -77,9 +79,48 @@ class _FifthPageState extends State<FifthPage> {
 
   bool get _isFormValid => _isCnicValid && _isPinValid;
 
-  void _onNextPressed() {
-    // Simulate verification process
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => SixthPage()));
+  void _onNextPressed() async {
+    final response = await http.post(
+      Uri.parse('https://localhost:7177/api/people/verify'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'cnic': _cnicController.text,
+        'pin': _pinController.text,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final userData = jsonDecode(response.body);
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => SixthPage(userData: userData),
+      ));
+    } else if (response.statusCode == 400 || response.statusCode == 401) {
+      _showErrorDialog('Invalid CNIC or PIN. Please try again.');
+    } else {
+      _showErrorDialog('An error occurred. Please try again later.');
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
