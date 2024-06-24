@@ -23,7 +23,7 @@ class FourthPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Are you ready for the next step? (Third Page)',
+                    'Live Results and Updates',
                     textAlign: TextAlign.left, // Align text to the left
                     style: TextStyle(
                       fontSize: 28,
@@ -33,7 +33,7 @@ class FourthPage extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   Text(
-                    'Get ready to explore more features of BallotChain. Your participation matters!',
+                    'Track live election results and get the latest updates instantly. Your vote matters, and so does staying informed.',
                     textAlign: TextAlign.left, // Align text to the left
                     style: TextStyle(
                       fontSize: 15,

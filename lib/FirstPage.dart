@@ -13,7 +13,7 @@ class FirstPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Are you ready to vote?',
+                  'Welcome to Voting App',
                   textAlign: TextAlign.left, // Align text to the left
                   style: TextStyle(
                     fontSize: 28,
@@ -23,7 +23,7 @@ class FirstPage extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Welcome to BallotChain, the app that makes voting secure & transparent. Take part in elections, wherever you are.',
+                  'Welcome to Voting App, your gateway to secure and convenient voting. Stay informed and make your vote count!',
                   textAlign: TextAlign.left, // Align text to the left
                   style: TextStyle(
                     fontSize: 15,

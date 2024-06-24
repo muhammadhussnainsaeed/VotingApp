@@ -23,7 +23,7 @@ class ThirdPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Are you ready for the next step? (Third Page)',
+                    'Secure Login',
                     textAlign: TextAlign.left, // Align text to the left
                     style: TextStyle(
                       fontSize: 28,
@@ -33,7 +33,7 @@ class ThirdPage extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   Text(
-                    'Get ready to explore more features of BallotChain. Your participation matters!',
+                    'Login using your CNIC and PIN for a secure experience. Easily update your PIN to keep your account safe.',
                     textAlign: TextAlign.left, // Align text to the left
                     style: TextStyle(
                       fontSize: 15,

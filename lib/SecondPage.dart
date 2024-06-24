@@ -25,7 +25,7 @@ class SecondPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Are you ready for the next step?',
+                    'Provincial and National Voting',
                     textAlign: TextAlign.left, // Align text to the left
                     style: TextStyle(
                       fontSize: 28,
@@ -35,7 +35,7 @@ class SecondPage extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   Text(
-                    'Get ready to explore more features of BallotChain. Your participation matters!',
+                    'Cast your vote for provincial and national assembly elections. View live results in real-time and stay updated.',
                     textAlign: TextAlign.left, // Align text to the left
                     style: TextStyle(
                       fontSize: 15,
