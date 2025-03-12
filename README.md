@@ -1,16 +1,62 @@
-# project1
+### **Voting App** 🗳️  
+A government-based voting app where users can securely log in, view candidates, cast their votes, and check election results.  
 
-A new Flutter project.
+---
 
-## Getting Started
+## **Features** ✨  
+- **Onboarding Screens** – Introduces the app and its purpose.  
+- **Login System** – Users log in using CNIC and password (no signup required).  
+- **Home Section** – Displays candidates in two categories: **Provincial & National**.  
+- **Voting Section** – Users vote for one candidate per category, with real-time results displayed.  
+- **Settings Section** – View profile, update PIN, and log out (with confirmation).  
+- **Security Features** – PIN protection & vote confirmation before submission.  
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## **Installation & Setup** ⚙️  
+1. **Clone the repository:**  
+   ```bash
+   git clone https://github.com/muhammadhussnainsaeed/VotingApp.git
+   cd VotingApp
+   ```
+2. **Install dependencies** (if applicable):  
+   ```bash
+   flutter pub get  # (For Flutter apps)
+   npm install      # (For JavaScript-based apps)
+   ```
+3. **Run the application:**  
+   ```bash
+   flutter run      # (For Flutter)
+   npm start        # (For Web)
+   ```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## **Known Issues & Improvements** 🛠️  
+- There might be **some issues** that need fixing.  
+- If you find a **bug** or want to enhance the app, feel free to contribute!  
+
+---
+
+## **Contributing** 🤝  
+We welcome contributions! Follow these steps to contribute:  
+1. **Fork the repository** on GitHub.  
+2. **Create a new branch** for your feature or fix:  
+   ```bash
+   git checkout -b feature-name
+   ```  
+3. **Make your changes** and commit them:  
+   ```bash
+   git commit -m "Added new feature"
+   ```  
+4. **Push your branch** to GitHub:  
+   ```bash
+   git push origin feature-name
+   ```  
+5. **Submit a Pull Request (PR)** for review.  
+
+---
+
+## **License** 📜  
+This project is **open-source** and can be modified to improve functionality.  
+
