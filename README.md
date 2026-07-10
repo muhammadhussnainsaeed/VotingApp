@@ -1,9 +1,9 @@
-### **Voting App** 🗳️  
+# **Voting App** 
 A government-based voting app where users can securely log in, view candidates, cast their votes, and check election results.  
 
 ---
 
-## **Features** ✨  
+## **Features** 
 - **Onboarding Screens** – Introduces the app and its purpose.  
 - **Login System** – Users log in using CNIC and password (no signup required).  
 - **Home Section** – Displays candidates in two categories: **Provincial & National**.  
@@ -13,7 +13,7 @@ A government-based voting app where users can securely log in, view candidates, 
 
 ---
 
-## **Installation & Setup** ⚙️  
+## **Installation & Setup** 
 1. **Clone the repository:**  
    ```bash
    git clone https://github.com/muhammadhussnainsaeed/VotingApp.git
@@ -32,13 +32,13 @@ A government-based voting app where users can securely log in, view candidates, 
 
 ---
 
-## **Known Issues & Improvements** 🛠️  
+## **Known Issues & Improvements** 
 - There might be **some issues** that need fixing.  
 - If you find a **bug** or want to enhance the app, feel free to contribute!  
 
 ---
 
-## **Contributing** 🤝  
+## **Contributing** 
 We welcome contributions! Follow these steps to contribute:  
 1. **Fork the repository** on GitHub.  
 2. **Create a new branch** for your feature or fix:  
@@ -55,8 +55,4 @@ We welcome contributions! Follow these steps to contribute:
    ```  
 5. **Submit a Pull Request (PR)** for review.  
 
----
-
-## **License** 📜  
-This project is **open-source** and can be modified to improve functionality.  
 
